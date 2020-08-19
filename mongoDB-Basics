@@ -1,0 +1,207 @@
+show dbs
+
+use test1
+
+db.dropDatabase()
+
+use acme
+
+db.createCollection('posts')
+
+db.posts.insert({
+	title: 'Post One',
+	body: 'Body of post one',
+	category: 'news',
+	likes: 4,
+	tages: ['news', 'events'],
+	user: {
+	name: 'Tanvi patil',
+	status: 'author'
+	},
+	date: Date()
+})
+
+db.posts.insertMany([
+	{
+	title: 'post two',
+	body: 'body of post two',
+	category: 'Technology',
+	date: Date()
+	},
+	{
+	title: 'poat three',
+	body: 'body of post three',
+	category: 'Entertainment',
+	date: Date()
+	},
+	{
+	title: 'post four',
+	body: 'body of post four',
+	category: 'News',
+	date: Date()
+	}
+])
+
+db.posts.find().pretty()
+----OUTPUT:
+{
+	"_id" : ObjectId("5f3ca4aec70eca387194fd18"),
+	"title" : "Post One",
+	"body" : "Body of post one",
+	"category" : "news",
+	"likes" : 4,
+	"tages" : [
+		"news",
+		"events"
+	],
+	"user" : {
+		"name" : "Tanvi patil",
+		"status" : "author"
+	},
+	"date" : "Wed Aug 19 2020 09:33:58 GMT+0530 (IST)"
+}
+{
+	"_id" : ObjectId("5f3ca6b3c70eca387194fd19"),
+	"title" : "post two",
+	"body" : "body of post two",
+	"category" : "Technology",
+	"date" : "Wed Aug 19 2020 09:42:35 GMT+0530 (IST)"
+}
+{
+	"_id" : ObjectId("5f3ca6b3c70eca387194fd1a"),
+	"title" : "poat three",
+	"body" : "body of post three",
+	"category" : "Entertainment",
+	"date" : "Wed Aug 19 2020 09:42:35 GMT+0530 (IST)"
+}
+{
+	"_id" : ObjectId("5f3ca6b3c70eca387194fd1b"),
+	"title" : "post four",
+	"body" : "body of post four",
+	"category" : "News",
+	"date" : "Wed Aug 19 2020 09:42:35 GMT+0530 (IST)"
+}
+------
+
+
+db.posts.find({ category: 'News' }).pretty()
+
+------OUTPUT:
+{
+	"_id" : ObjectId("5f3ca6b3c70eca387194fd1b"),
+	"title" : "post four",
+	"body" : "body of post four",
+	"category" : "News",
+	"date" : "Wed Aug 19 2020 09:42:35 GMT+0530 (IST)"
+}
+------
+
+db.posts.find().sort({ title: 1}).pretty() 
+# 1 for ascending and -1 for descending
+
+db.posts.find({ category: 'News' }).count()
+db.posts.find().limit(2)
+
+db.posts.find().forEach(function(doc) { print('Blog post:' + doc.title) })
+
+db.posts.findOne( { category: 'news'} )
+db.posts.update({ title: 'post two' },
+{
+	title: 'post two',
+	body: 'new post 2 body',
+	date: Date()
+},
+{
+	upsert: true 
+})
+if record not found it will insert this. (update and insert)
+
+db.posts.update({ title: 'post two' },
+{
+	$set: {
+	body: 'post two body',
+	category: 'Technology'
+	}
+})
+
+db.posts.update({title: 'Post One'} , { 
+	$inc: {
+		likes: 2
+	}
+})
+
+db.posts.update({title: 'Post One'},{
+	$rename: {
+	likes: 'views'
+	}
+})
+
+db.posts.remove({ title: 'post four' })
+
+db.posts.update({title: 'Post One'},
+{
+	$set: {
+	comments: [
+		{
+			user: 'mary J.',
+			body: 'comment one',
+			date: Date()
+		},
+		{
+			user: 'john S.',
+			body: 'comment two',
+			date: Date()
+		}
+	]
+	}
+})
+
+db.posts.find({
+	comments: {
+	$elemMatch: {
+	user: 'mary J.'
+	}
+	}
+})
+
+db.posts.createIndex({ title: 'text' })
+
+db.posts.find({
+	$text: {
+	$search: "\"Post 0\""
+	}
+})
+
+OUTPUT: Nil
+
+db.posts.find({
+	$text: {
+	$search: "\"post o\""
+	}
+})
+
+db.posts.find(
+{
+	$text: {
+	$search: "\"post t\""
+	}
+})
+
+db.posts.update({title: 'poat three'},{
+	$set:
+	{
+	title: 'post three'
+	}
+})
+
+db.posts.update({title: 'post two'},
+{
+	$set:
+	{
+		views: 10
+	}
+})
+
+db.posts.find({ views: {$gt: 3} })
+
+
